@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorAccent">#f07a22</color>
+
+    <color name="chatting_count_down">#ff8080</color>
+
+    <color name="text_grey">#bdbdbd</color>
+    <color name="text_red">#fe5252</color>
+    <color name="white">#ffffff</color>
+
+    <color name="border_bottom_line">#cacaca</color>
+    <color name="light_grey">#a7a7a7</color>
+
+    <color name="friendlist_label">#ff8500</color>
+    <color name="friendlist_background">#ecf0f0</color>
+
+    <color name="chat_unknownperson">#d6ff4040</color>
+
+    <color name="White">#FFFFFF</color>
+    <color name="DeepLightGrey">#ECECEC</color>
+    <color name="DarkGray">#A9A9A9</color>
+    <color name="Gray">#808080</color>
+    <color name="Black">#000000</color>
+
+    <!-- Black Transparent -->
+
+    <!-- White Transparent -->
+
+    <color name="transparent">@android:color/transparent</color>
+
+    <!-- pinks -->
+
+    <!-- purples -->
+
+    <!-- deep purples -->
+
+    <!-- indigo -->
+
+    <!--blue-->
+
+    <!-- light blue-->
+
+    <!-- cyan -->
+
+    <!-- teal -->
+
+    <!-- green -->
+
+    <!--light green-->
+
+    <!-- lime-->
+
+    <!--yellow -->
+
+    <!--amber-->
+
+    <!--orange-->
+
+    <!--deep orange-->
+
+    <!--brown -->
+
+    <!--grey-->
+    <color name="md_black_1000">#000000</color>
+
+    <!--blue grey-->
+
+</resources>

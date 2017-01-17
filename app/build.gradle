@@ -1,0 +1,49 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "24.0.2"
+    defaultConfig {
+        applicationId "test.kth.xmpptestproject"
+        minSdkVersion 16
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'org.igniterealtime.smack:smack-android:4.1.4'
+    // Optional for XMPPTCPConnection
+    compile 'org.igniterealtime.smack:smack-tcp:4.1.4'
+    // Optional for XMPP-IM (RFC 6121) support (Roster, Threaded Chats)
+    compile 'org.igniterealtime.smack:smack-im:4.1.4'
+    // Optional for XMPP extensions support
+    compile 'org.igniterealtime.smack:smack-extensions:4.1.4'
+    compile 'com.jakewharton:butterknife:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile 'gun0912.ted:tedpermission:1.0.2'
+    compile 'com.android.support:recyclerview-v7:25.1.0'
+
+    compile 'com.google.firebase:firebase-core:9.2.0'
+    compile 'com.google.firebase:firebase-messaging:9.2.0'
+
+    compile 'io.reactivex:rxandroid:1.2.1'
+// Because RxAndroid releases are few and far between, it is recommended you also
+// explicitly depend on RxJava's latest version for bug fixes and new features.
+    compile 'io.reactivex:rxjava:1.1.6'
+
+
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'co.devcenter.square:android-ui-library:0.1'
+}
