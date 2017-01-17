@@ -12,6 +12,8 @@ import butterknife.ButterKnife;
 import co.devcenter.androiduilibrary.ChatView;
 import co.devcenter.androiduilibrary.SendButton;
 import co.devcenter.androiduilibrary.models.ChatMessage;
+import rx.Observable;
+import rx.Subscriber;
 import rx.functions.Action1;
 import test.kth.xmpptestproject.common.RxEventBus;
 import test.kth.xmpptestproject.common.RxEventBusProvider;
@@ -46,6 +48,7 @@ public class ChatActivity extends AppCompatActivity {
         myXMPP = MyXMPP.getInstance();
 
 
+
 //        chatAdapter = new ChatAdapter_v2(ChatActivity.this, mChatDataList);
 //        chatAdapter.setHasStableIds(true);
 //        LinearLayoutManager lm = new LinearLayoutManager(this);
@@ -59,6 +62,17 @@ public class ChatActivity extends AppCompatActivity {
 
         setTitle(friends.getUser());
 
+        if(friends.getUser().startsWith("test2@")) {
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    myXMPP.createGroup(friends.getUser(), "test2@tommy");
+                }
+            });
+            thread.start();
+        }
+
+
         registerPush();
 
         SendButton sendButton = chatView.getSendButton();
@@ -67,7 +81,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Logger.log("typed String -> " + chatView.getTypedString());
                 ChatMessage chatMessage = new ChatMessage(chatView.getTypedString(), System.currentTimeMillis(), ChatMessage.Status.SENT);
-                myXMPP.sendMsg(friends.getUser() + "/Android", chatView.getTypedString());
+                myXMPP.sendGroupMsg(friends.getUser() + "/Android", chatView.getTypedString());
 
                 chatView.sendMessage(chatMessage);
             }

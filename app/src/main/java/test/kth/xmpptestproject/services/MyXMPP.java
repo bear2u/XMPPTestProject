@@ -10,6 +10,8 @@ import android.widget.Toast;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionListener;
+import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -35,6 +37,7 @@ import org.jivesoftware.smackx.search.UserSearch;
 import org.jivesoftware.smackx.search.UserSearchManager;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -106,6 +109,8 @@ public class MyXMPP implements ConnectionListener, ChatManagerListener, RosterLi
         configBuilder.setHost(HOST);
         configBuilder.setPort(PORT);
         configBuilder.setDebuggerEnabled(true);
+
+        SmackConfiguration.setDefaultPacketReplyTimeout(10000);
         //SmackConfiguration.addDisabledSmackClass(Socks5BytestreamManager.class);
         //configBuilder.setDebuggerEnabled(true);
         connection = new XMPPTCPConnection(configBuilder.build());
@@ -176,28 +181,58 @@ public class MyXMPP implements ConnectionListener, ChatManagerListener, RosterLi
         }
     }
 
-    public void createGroup(String jid , String inviter){
-
-        MultiUserChatManager mum = MultiUserChatManager.getInstanceFor(connection);
-        MultiUserChat multiUserChat = mum.getMultiUserChat(jid);
-        Form form = null;
+    public void sendGroupMsg(String jid , String msg){
+        Message message = new Message("ddd@conference.tommy" , Message.Type.groupchat  );
+        message.setBody(msg);
+        MultiUserChatManager multiUserChatManager = MultiUserChatManager.getInstanceFor(connection);
+        MultiUserChat multiUserChat = multiUserChatManager.getMultiUserChat("ddd@conference.tommy");
         try {
-            form = multiUserChat.getConfigurationForm().createAnswerForm();
-            form.setAnswer("muc#roomconfig_publicroom", false);
-//            form.setAnswer("muc#roomconfig_roomname", "room786");
-            form.setAnswer("muc#roomconfig_persistentroom", true);
-
-            multiUserChat.sendConfigurationForm(form);
-
-            multiUserChat.invite(inviter , "hihi");
-
-        } catch (SmackException.NoResponseException e) {
-            e.printStackTrace();
-        } catch (XMPPException.XMPPErrorException e) {
-            e.printStackTrace();
+            multiUserChat.sendMessage(message);
         } catch (SmackException.NotConnectedException e) {
             e.printStackTrace();
         }
+    }
+
+
+
+
+
+    public void createGroup(String jid , String inviter){
+
+        // Get the MultiUserChatManager
+        MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
+
+// Get a MultiUserChat using MultiUserChatManager
+        MultiUserChat muc = manager.getMultiUserChat("ddd@conference.tommy");
+
+// Create the room
+        try {
+            List<String> serviceNames = manager.getServiceNames();
+            Logger.log("servicenames -> " + serviceNames);
+            muc.create("test");
+            muc.sendConfigurationForm(new Form(DataForm.Type.submit));
+
+            muc.invite("test2@tommy/Android" , "~~~~~ test2 How r u ??");
+            muc.invite("test4@tommy/Android" , "~~~~~ test4 How r u ??");
+
+            muc.addMessageListener(new MessageListener() {
+                @Override
+                public void processMessage(Message message) {
+                    ChatMessage chatMessage = new ChatMessage(message.getBody() , System.currentTimeMillis() , ChatMessage.Status.RECEIVED);
+                    RxEventBusProvider.provide().post(chatMessage);
+                }
+            });
+
+
+        } catch (XMPPException.XMPPErrorException e) {
+            e.printStackTrace();
+        } catch (SmackException e) {
+            e.printStackTrace();
+        }
+
+// Send an empty room configuration form which indicates that we want
+// an instant room
+
 
     }
 
@@ -211,7 +246,16 @@ public class MyXMPP implements ConnectionListener, ChatManagerListener, RosterLi
 //                MultiUserChatManager mcm = MultiUserChatManager.getInstanceFor(connection);
 //                mcm.getMultiUserChat(inviter);
 //                MultiUserChat chatRoom = new MultiUserChat(room, room);
-                room.join(inviter);
+
+                room.join("ddd");
+                room.addMessageListener(new MessageListener() {
+                    @Override
+                    public void processMessage(Message message) {
+                        ChatMessage chatMessage = new ChatMessage(message.getBody() , System.currentTimeMillis() , ChatMessage.Status.RECEIVED);
+                        RxEventBusProvider.provide().post(chatMessage);
+                    }
+                });
+
             }
             catch (SmackException.NoResponseException | XMPPException.XMPPErrorException | SmackException.NotConnectedException e)
             {
